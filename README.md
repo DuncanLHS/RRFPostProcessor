@@ -8,3 +8,4 @@ All previous start and end scripts stored in slicer should be moved to start.g a
 - Replace deprecated M104 & M109 with G10 commands (untested for tool changes)
 - Remove start and end sripts
 - Append M0 to execute stop.g at end of job
+- Support 4 extruders (in comments)
