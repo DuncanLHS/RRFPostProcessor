@@ -10,7 +10,7 @@ All previous start and end scripts stored in slicer should be moved to start.g a
 - Removed other functions start and end scripts.
 - Append M0 to execute stop.g at end of job.
 
-### In testing:
+### In testing/ideas:
 - Optional execute macro after extruder and bed up to temperature (useful to home Z or run purge/wipe routines)
 - Optional execute macro at layer change (for timelapses).
 - Standby temperature properties.
