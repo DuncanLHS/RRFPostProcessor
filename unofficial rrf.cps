@@ -29,6 +29,7 @@ properties = {
   printerModel: "Generic RRF Printer",
   postHeatMacro: "",
   onLayerMacro: "",
+  onLayerMin: 2,
 };
 
 // user-defined property definitions
@@ -41,19 +42,20 @@ propertyDefinitions = {
       {title:"Generic RRF Printer", id:"rrf"},
     ]
   },
-  propertyDefinitions = {
-    postHeatMacro: {
-      title: "Post Heat Macro",
-      description: "Macro to run after heating. Full M98 path.",
-      type: "string",
-    },
+  postHeatMacro: {
+    title: "Post Heat Macro",
+    description: "Macro to run after heating. Full M98 path.",
+    type: "string",
   },
-  propertyDefinitions = {
-    onLayerMacro: {
-      title: "Layer Change Macro",
-      description: "Macro to run at each layer change. Full M98 path.",
-      type: "string",
-    }
+  onLayerMacro: {
+    title: "Layer Change Macro",
+    description: "Macro to run at each layer change. Full M98 path.",
+    type: "string",
+  },
+  onLayerMin: {
+    title: "Layer Change Min Layer",
+    description: "First layer to run Layer Change Macro",
+    type: "integer",
   }
 };
 
@@ -159,7 +161,7 @@ function getPrinterGeometry() {
 }
 
 function onClose() {
-  writeBlock(mFormat.format(0),hFormat.format(1));
+  writeBlock(mFormat.format(0));
   writeComment("END OF GCODE")
 }
 
@@ -198,11 +200,11 @@ function onSection() {
   //writeRetract(X, Y);
   //writeBlock(gFormat.format(92), eOutput.format(0));
 
-  //Execute post-heat macro
-  if (postHeatMacro !== ""){
-    writeComment("Executing post heat macro: " + postHeatMacro)
-    writeBlock(mFormat.format(98), pFormat.format('"' + postHeatMacro + '"'))
+  if (properties.postHeatMacro !== ""){
+    writeComment("Executing post heat macro: " + properties.postHeatMacro);
+    writeBlock(mFormat.format(98), "P\"" + properties.postHeatMacro + "\"");
   }
+
 }
 
 function onRapid(_x, _y, _z) {
@@ -252,9 +254,9 @@ function onExtrusionReset(length) {
 
 function onLayer(num) {
   writeComment("Layer : " + integerFormat.format(num) + " of " + integerFormat.format(layerCount));
-  if (onLayerMacro !== ""){
-    writeComment("Executing layer change macro: " + onLayerMacro)
-    writeBlock(mFormat.format(98), pFormat.format('"' + onLayerMacro + '"'))
+  if (properties.onLayerMacro !== "" && properties.onLayerMin <= num){
+    writeComment("Executing layer change macro: " + properties.onLayerMacro);
+    writeBlock(mFormat.format(98), "P\"" + properties.onLayerMacro + "\"");
   }
 }
 
