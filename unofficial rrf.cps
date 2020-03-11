@@ -49,6 +49,7 @@ var gFormat = createFormat({prefix: "G", width: 1, zeropad: false, decimals: 0})
 var mFormat = createFormat({prefix: "M", width: 2, zeropad: true, decimals: 0});
 var tFormat = createFormat({prefix: "T", width: 1, zeropad: false, decimals: 0});
 var pFormat = createFormat({prefix: "P", width: 1, zeropad: false, decimals: 0});
+var hFormat = createFormat({prefix: "H", width: 1, zeropad: false, decimals: 0});
 var feedFormat = createFormat({decimals: (unit == MM ? 0 : 1)});
 var integerFormat = createFormat({decimals:0});
 var dimensionFormat = createFormat({decimals: (unit == MM ? 3 : 4), zeropad: false, suffix: (unit == MM ? "mm" : "in")});
@@ -142,7 +143,7 @@ function getPrinterGeometry() {
 }
 
 function onClose() {
-  writeBlock("M0 ; execute stop.g");
+  writeBlock(mFormat.format(0),hFormat.format(1));
   writeComment("END OF GCODE")
 }
 
