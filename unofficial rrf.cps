@@ -27,6 +27,8 @@ var activeExtruder = 0;  //Track the active extruder.
 // user-defined properties
 properties = {
   printerModel: "Generic RRF Printer",
+  postHeatMacro: "",
+  onLayerMacro: "",
 };
 
 // user-defined property definitions
@@ -39,6 +41,20 @@ propertyDefinitions = {
       {title:"Generic RRF Printer", id:"rrf"},
     ]
   },
+  propertyDefinitions = {
+    postHeatMacro: {
+      title: "Post Heat Macro",
+      description: "Macro to run after heating. Full M98 path.",
+      type: "string",
+    },
+  },
+  propertyDefinitions = {
+    onLayerMacro: {
+      title: "Layer Change Macro",
+      description: "Macro to run at each layer change. Full M98 path.",
+      type: "string",
+    }
+  }
 };
 
 var xyzFormat = createFormat({decimals: (unit == MM ? 3 : 4)});
@@ -181,6 +197,12 @@ function onSection() {
   // home XY
   //writeRetract(X, Y);
   //writeBlock(gFormat.format(92), eOutput.format(0));
+
+  //Execute post-heat macro
+  if (postHeatMacro !== ""){
+    writeComment("Executing post heat macro: " + postHeatMacro)
+    writeBlock(mFormat.format(98), pFormat.format('"' + postHeatMacro + '"'))
+  }
 }
 
 function onRapid(_x, _y, _z) {
@@ -230,6 +252,10 @@ function onExtrusionReset(length) {
 
 function onLayer(num) {
   writeComment("Layer : " + integerFormat.format(num) + " of " + integerFormat.format(layerCount));
+  if (onLayerMacro !== ""){
+    writeComment("Executing layer change macro: " + onLayerMacro)
+    writeBlock(mFormat.format(98), pFormat.format('"' + onLayerMacro + '"'))
+  }
 }
 
 function onExtruderTemp(temp, wait, id) {
