@@ -4,6 +4,7 @@ First attempt at a RepRap Firmware post-processor for Fusion 360 FFF. More chang
 All previous start and end scripts stored in slicer should be moved to start.g and stop.g in RRF firmware.
 
 ### Early changes to examples:
+- Remove all pre-print homing, these should be added to start.g
 - Replace deprecated M107 with M106 S0
 - Replace deprecated M104 & M109 with G10 commands (untested for tool changes)
 - Remove start and end sripts
