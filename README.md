@@ -1,13 +1,15 @@
-# Update 11/03/2020
-
-- Change M0 at end to include H1 parameter to keep heaters on. Heaters can be turned off in stop.g.
-- Added optional layer change macro property. Executes a macro at each layer change. Insert full path to macro as per M98 in post-processing properties window.
-- Added optional post-heat macro property. Executes a macro after heating but before print start. Insert full path to macro as per M98 in post-processing properties window.
-
-# Initial Release 11/03/2020
 First attempt at a RepRap Firmware post-processor for Fusion 360 FFF.
 
 All previous start and end scripts stored in slicer should be moved to start.g and stop.g in RRF firmware.
+
+# Update 11/03/2020
+
+Added post-processor properties
+- Optional layer change macro property. Executes a macro at start of each layer. Insert full path to macro as per M98 in post-processing properties window. Useful for timelapses etc.
+- Minimum layer to run layer change macro, default 2. Layer change macro will execute at the start of this layer and every layer thereafter.
+- Optional post-heat macro property. Executes a macro after heating but before print start. Insert full path to macro as per M98 in post-processing properties window. Useful for additional wipe or purge routines
+
+# Initial Release 11/03/2020
 
 ### Early changes to generic fff example:
 - Removed all pre-print homing, these should be added to start.g.
@@ -25,3 +27,4 @@ All previous start and end scripts stored in slicer should be moved to start.g a
 - Initial extruder heating, bed heating, and the purge line are all automatic and cannot be edited at present.
 - Standby temperatures are not natively supported.
 - CAM output for extrusion is absolute only.
+- Heaters are turned off at end of toolpath. cannot be edited at present.
