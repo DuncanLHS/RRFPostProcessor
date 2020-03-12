@@ -246,7 +246,7 @@ function onLinearExtrude(_x, _y, _z, _f, _e) {
 }
 
 function onBedTemp(temp, wait) {
-  if (incLayerCount > 0){
+  if (incLayerCount > 0 || properties.heatControl){
     if (wait) {
       writeBlock(mFormat.format(190), sOutput.format(temp));
     } else {
