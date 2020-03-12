@@ -17,7 +17,7 @@ Several properties can be adjusted to customise the output. All are found in the
 
 ### Update 12/03/2020
 
-Workaround for disabling generated toolpath control of extruder and bed heaters. Enable Heater Control (Default: Yes) decides whether the slicer should include commands to control initial warmup of the extruder and bed, followed by shut off at completion of the print. Enable for simplicity, disable if you want to use other methods (eg. the filament system) to control extruder and bed temps. The post-heat macro property remains but is not neccesary if heater control is disabled, in that case any methods that would otherwise go here can be moved to start.g.
+Workaround for disabling generated toolpath control of extruder and bed heaters. Enable Heater Control (Default: Yes) decides whether the slicer should include commands to control initial warmup of the extruder and bed, followed by shut off at completion of the print. Enable for simplicity, disable if you want to use other methods (eg. the filament system) to control extruder and bed temps. The post-heat macro property remains but is not necessary if heater control is disabled, in that case any methods that would otherwise go here can be moved to start.g.
 
 Re-instated M0 H1 at end of print.
 
