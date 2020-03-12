@@ -14,6 +14,9 @@ capabilities = CAPABILITY_ADDITIVE;
 tolerance = spatial(0.002, MM);
 highFeedrate = (unit == MM) ? 6000 : 236;
 
+//allow circular planes test
+//allowedCircularPlanes = (1 << PLANE_XY);
+
 // needed for range checking, will be effectively passed from Fusion
 var printerLimits = {
   x: {min: 0, max: 200.0}, //Defines the x bed size
@@ -82,6 +85,9 @@ var zOutput = createVariable({prefix: "Z"}, zFormat);
 var feedOutput = createVariable({prefix: "F"}, feedFormat);
 var eOutput = createVariable({prefix: "E"}, xyzFormat);  // Extrusion length
 var sOutput = createVariable({prefix: "S", force: true}, xyzFormat);  // Parameter temperature or speed
+
+//incremental layer count for heater workaround
+var incLayerCount = 0
 
 // Writes the specified block.
 function writeBlock() {
@@ -162,7 +168,7 @@ function getPrinterGeometry() {
 
 function onClose() {
   writeBlock(mFormat.format(0));
-  writeComment("END OF GCODE")
+  writeComment("END OF GCODE");
 }
 
 function onComment(message) {
@@ -205,6 +211,12 @@ function onSection() {
     writeBlock(mFormat.format(98), "P\"" + properties.postHeatMacro + "\"");
   }
 
+  incLayerCount = 0
+
+}
+
+function onSectionEnd(){
+  writeComment("Section End")
 }
 
 function onRapid(_x, _y, _z) {
@@ -228,10 +240,12 @@ function onLinearExtrude(_x, _y, _z, _f, _e) {
 }
 
 function onBedTemp(temp, wait) {
-  if (wait) {
-    writeBlock(mFormat.format(190), sOutput.format(temp));
-  } else {
-    writeBlock(mFormat.format(140), sOutput.format(temp));
+  if (incLayerCount > 0){
+    if (wait) {
+      writeBlock(mFormat.format(190), sOutput.format(temp));
+    } else {
+      writeBlock(mFormat.format(140), sOutput.format(temp));
+    }
   }
 }
 
@@ -258,22 +272,23 @@ function onLayer(num) {
     writeComment("Executing layer change macro: " + properties.onLayerMacro);
     writeBlock(mFormat.format(98), "P\"" + properties.onLayerMacro + "\"");
   }
+  incLayerCount = num;
 }
 
 function onExtruderTemp(temp, wait, id) {
   var extruderString = "";
-
   extruderString = pFormat.format(id);
-  
-  if (id < numberOfExtruders) {
-    if (wait) {
-      writeBlock(gFormat.format(10), pFormat.format(id), sOutput.format(temp));
-      writeBlock(mFormat.format(116));
+  if (incLayerCount > 0){
+    if (id < numberOfExtruders) {
+      if (wait) {
+        writeBlock(gFormat.format(10), pFormat.format(id), sOutput.format(temp));
+        writeBlock(mFormat.format(116));
+      } else {
+        writeBlock(gFormat.format(10), pFormat.format(id), sOutput.format(temp));
+      }
     } else {
-      writeBlock(gFormat.format(10), pFormat.format(id), sOutput.format(temp));
+      error(localize("This printer doesn't support the extruder ") + integerFormat.format(id) + " !");
     }
-  } else {
-    error(localize("This printer doesn't support the extruder ") + integerFormat.format(id) + " !");
   }
 }
 
@@ -307,6 +322,10 @@ function setFeedRate(value) {
 
 function writeComment(text) {
   writeln(";" + text);
+  var index = text.indexOf("park position");    
+    if(index !== -1){
+        incLayerCount = 0
+    }
 }
 
 function writeRetract() {
