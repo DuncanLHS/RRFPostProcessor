@@ -33,6 +33,7 @@ properties = {
   postHeatMacro: "",
   onLayerMacro: "",
   onLayerMin: 2,
+  heatControl: true,
 };
 
 // user-defined property definitions
@@ -59,6 +60,11 @@ propertyDefinitions = {
     title: "Layer Change Min Layer",
     description: "First layer to run Layer Change Macro",
     type: "integer",
+  },
+  heatControl: {
+    title: "Enable heater control",
+    description: "Enable heater control",
+    type: "boolean"
   }
 };
 
@@ -278,7 +284,7 @@ function onLayer(num) {
 function onExtruderTemp(temp, wait, id) {
   var extruderString = "";
   extruderString = pFormat.format(id);
-  if (incLayerCount > 0){
+  if (incLayerCount > 0 || properties.heatControl){
     if (id < numberOfExtruders) {
       if (wait) {
         writeBlock(gFormat.format(10), pFormat.format(id), sOutput.format(temp));
