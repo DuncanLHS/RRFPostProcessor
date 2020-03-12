@@ -173,7 +173,7 @@ function getPrinterGeometry() {
 }
 
 function onClose() {
-  writeBlock(mFormat.format(0));
+  writeBlock(mFormat.format(0), hFormat.format(1));
   writeComment("END OF GCODE");
 }
 
