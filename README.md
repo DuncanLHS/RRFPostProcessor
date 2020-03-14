@@ -4,7 +4,7 @@ All previous start and end scripts stored in slicer should be moved to start.g a
 
 ## Usage
 
-This is a stripped back post-processor with as few excess gcode commands as possible enabling full use of the RRF macro system. The post produces the bare minimum gcode to complete a print with all other requirements (for eaxample homing and heating) falling on start.g and stop.g
+This is a stripped back post-processor with as few excess gcode commands as possible enabling full use of the RRF macro system. The post produces the bare minimum gcode to complete a print with responsibility all other requirements (for eaxample homing and heating) falling on start.g and stop.g
 
 Several properties can be adjusted to customise the output. All are found in the properties table of the post-process window.
 
