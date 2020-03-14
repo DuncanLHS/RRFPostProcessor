@@ -43,7 +43,7 @@ Early changes to generic fff example:
 - Standby temperature properties.
 
 ## Additional notes:
-- Initial extruder heating, bed heating, and the purge line are all automatic and cannot be edited at present.
+- ~~Initial extruder heating, bed heating, and the purge line are all automatic and cannot be edited at present.~~
 - Standby temperatures are not natively supported.
 - CAM output for extrusion is absolute only.
-- Heaters are turned off at end of toolpath. cannot be edited at present.
+- ~~Heaters are turned off at end of toolpath. cannot be edited at present.~~
