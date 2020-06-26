@@ -4,16 +4,21 @@ All previous start and end scripts stored in slicer should be moved to start.g a
 
 ## Usage
 
-This is a stripped back post-processor with as few excess gcode commands as possible enabling full use of the RRF macro system. The post produces the bare minimum gcode to complete a print with responsibility all other requirements (for example homing and heating) falling on start.g and stop.g
+This is a stripped back post-processor with as few excess gcode commands as possible enabling full use of the RRF macro system. The post produces the bare minimum gcode to complete a print with responsibility for all other functions (for example homing and heating) falling on start.g and stop.g
 
 Several properties can be adjusted to customise the output. All are found in the properties table of the post-process window.
 
 ![Post Process Window](./PostProcessWindow.png "Post Process Window")
 
+- **Fan Speed:** This applies the same fan speed to the entire print from the layer after the 'Num. layers fan disabled' print setting.
 - **Enable heater Control:** When enabled, the output contains commands to heat the extruder and bed at the start and to turn them off at the end. Regardless of this setting, any heater related gcode commands given mid print will be included.
 - **Layer Change Macro:** Full path to a macro that will be run at the start of each layer. Path is to be identical to that used in M98.
 - **Layer Change Min Layer:** First layer at which the Layer Change Macro should be run.
 - **Post Heat Macro:** Full path to a macro that will be run after the toolpath heater control but before the print start. Path is to be identical to that used in M98.
+
+### Update 26/06/2020
+
+Created a fan speed property in the post processor. Workaround for the currently non-existent fan speed control. Current Fusion 360 default is to turn the fan on 100% after the number of layers diasbled in print settings. This changes that to a custom value.
 
 ### Update 12/03/2020
 

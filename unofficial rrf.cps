@@ -34,6 +34,7 @@ properties = {
   onLayerMacro: "",
   onLayerMin: 2,
   heatControl: true,
+  fanSpeed: 100,
 };
 
 // user-defined property definitions
@@ -62,9 +63,14 @@ propertyDefinitions = {
     type: "integer",
   },
   heatControl: {
-    title: "Enable heater control",
+    title: "Enable Heater Control",
     description: "Enable heater control",
     type: "boolean"
+  },
+  fanSpeed: {
+    title: "Fan Speed",
+    description: "Fan speed for duration of print",
+    type: "integer"
   }
 };
 
@@ -300,12 +306,18 @@ function onExtruderTemp(temp, wait, id) {
 
 function onFanSpeed(speed, id) {
   // to do handle id information
-  if (speed == 0) {
-    writeBlock(mFormat.format(106), sOutput.format(0));
+  if (properties.fanSpeed>=0 && properties.fanSpeed<=100) {
+    if (speed == 0) {
+      writeBlock(mFormat.format(106), sOutput.format(0));
+    } else {
+      writeBlock(mFormat.format(106), sOutput.format(properties.fanSpeed * 2.55));
+    }
   } else {
-    writeBlock(mFormat.format(106), sOutput.format(speed));
+    error(localize("Fan speed outside range 0-100"));
+    return;
   }
 }
+
 
 function onParameter(name, value) {
   switch (name) {
