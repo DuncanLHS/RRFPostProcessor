@@ -117,13 +117,14 @@ function onOpen() {
   }
 
   writeComment("Printer Name: " + machineConfiguration.getVendor() + " " + machineConfiguration.getModel());
-  writeComment("Print time: " + xyzFormat.format(printTime) + "s");
+  writeComment("TIME:" + xyzFormat.format(printTime));
+  writeComment("Generated with LittleHobbyShop's RRF Post for F360");
   writeComment("Max temp: " + integerFormat.format(getExtruder(1).temperature));
   writeComment("Bed temp: " + integerFormat.format(bedTemp));
   writeComment("Layer Count: " + integerFormat.format(layerCount));
   
   //Extruder 1
-  writeComment("Extruder 1 material used: " + dimensionFormat.format(getExtruder(1).extrusionLength));
+  writeComment("Filament used: " + dimensionFormat.format(getExtruder(1).extrusionLength));
   writeComment("Extruder 1 material name: " + getExtruder(1).materialName);
   writeComment("Extruder 1 filament diameter: " + dimensionFormat.format(getExtruder(1).filamentDiameter));
   writeComment("Extruder 1 nozzle diameter: " + dimensionFormat.format(getExtruder(1).nozzleDiameter));
