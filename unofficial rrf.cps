@@ -26,6 +26,7 @@ var printerLimits = {
 
 var extruderOffsets = [[0, 0, 0], [0, 0, 0]];
 var activeExtruder = 0;  //Track the active extruder.
+var totalExtrusionLength = 0; //Accumulate filament used
 
 // user-defined properties
 properties = {
@@ -117,41 +118,28 @@ function onOpen() {
   }
 
   writeComment("Printer Name: " + machineConfiguration.getVendor() + " " + machineConfiguration.getModel());
-  writeComment("TIME:" + xyzFormat.format(printTime));
   writeComment("Generated with LittleHobbyShop's RRF Post for F360");
   writeComment("Max temp: " + integerFormat.format(getExtruder(1).temperature));
   writeComment("Bed temp: " + integerFormat.format(bedTemp));
-  writeComment("Layer Count: " + integerFormat.format(layerCount));
-  
-  //Extruder 1
-  writeComment("Filament used: " + dimensionFormat.format(getExtruder(1).extrusionLength));
-  writeComment("Extruder 1 material name: " + getExtruder(1).materialName);
-  writeComment("Extruder 1 filament diameter: " + dimensionFormat.format(getExtruder(1).filamentDiameter));
-  writeComment("Extruder 1 nozzle diameter: " + dimensionFormat.format(getExtruder(1).nozzleDiameter));
-  writeComment("Extruder 1 offset x: " + dimensionFormat.format(extruderOffsets[0][0]));
-  writeComment("Extruder 1 offset y: " + dimensionFormat.format(extruderOffsets[0][1]));
-  writeComment("Extruder 1 offset z: " + dimensionFormat.format(extruderOffsets[0][2]));
-  
-  //Extruder 2
-  if (hasGlobalParameter("ext2-extrusion-len") &&
-    hasGlobalParameter("ext2-nozzle-dia") &&
-    hasGlobalParameter("ext2-temp") && hasGlobalParameter("ext2-filament-dia") &&
-    hasGlobalParameter("ext2-material-name")
-  ) {
-    writeComment("Extruder 2 material used: " + dimensionFormat.format(getExtruder(2).extrusionLength));
-    writeComment("Extruder 2 material name: " + getExtruder(2).materialName);
-    writeComment("Extruder 2 filament diameter: " + dimensionFormat.format(getExtruder(2).filamentDiameter));
-    writeComment("Extruder 2 nozzle diameter: " + dimensionFormat.format(getExtruder(2).nozzleDiameter));
-    writeComment("Extruder 2 max temp: " + integerFormat.format(getExtruder(2).temperature));
-    writeComment("Extruder 2 offset x: " + dimensionFormat.format(extruderOffsets[1][0]));
-    writeComment("Extruder 2 offset y: " + dimensionFormat.format(extruderOffsets[1][1]));
-    writeComment("Extruder 2 offset z: " + dimensionFormat.format(extruderOffsets[1][2]));
+
+  //Write extruder info (reworked)
+  for (i = 1; i <= numberOfExtruders; i++) {
+    writeComment("Extruder " + i + " Filament used: " + dimensionFormat.format(getExtruder(i).extrusionLength));
+    totalExtrusionLength += dimensionFormat.format(getExtruder(i).extrusionLength);
+    writeComment("Extruder " + i + " material name: " + getExtruder(i).materialName);
+    writeComment("Extruder " + i + " filament diameter: " + dimensionFormat.format(getExtruder(i).filamentDiameter));
+    writeComment("Extruder " + i + " nozzle diameter: " + dimensionFormat.format(getExtruder(i).nozzleDiameter));
+    writeComment("Extruder " + i + " offset x: " + dimensionFormat.format(extruderOffsets[i - 1][0]));
+    writeComment("Extruder " + i + " offset y: " + dimensionFormat.format(extruderOffsets[i - 1][1]));
+    writeComment("Extruder " + i + " offset z: " + dimensionFormat.format(extruderOffsets[i - 1][2]));
   }
 
+  writeComment("Layer Count: " + integerFormat.format(layerCount));
   writeComment("width: " + dimensionFormat.format(printerLimits.x.max));
   writeComment("depth: " + dimensionFormat.format(printerLimits.y.max));
   writeComment("height: " + dimensionFormat.format(printerLimits.z.max));
   writeComment("Count of bodies: " + integerFormat.format(partCount));
+  writeComment("TIME:" + xyzFormat.format(printTime));
   writeComment("Version of Fusion: " + getGlobalParameter("version", "0"));
 }
 
@@ -167,15 +155,12 @@ function getPrinterGeometry() {
   printerLimits.y.max = machineConfiguration.getDepth() - machineConfiguration.getCenterPositionY();
   printerLimits.z.max = machineConfiguration.getHeight() + machineConfiguration.getCenterPositionZ();
 
-  //Get the extruder configuration
-  extruderOffsets[0][0] = machineConfiguration.getExtruderOffsetX(1);
-  extruderOffsets[0][1] = machineConfiguration.getExtruderOffsetY(1);
-  extruderOffsets[0][2] = machineConfiguration.getExtruderOffsetZ(1);
-  if (numberOfExtruders > 1) {
-    extruderOffsets[1] = [];
-    extruderOffsets[1][0] = machineConfiguration.getExtruderOffsetX(2);
-    extruderOffsets[1][1] = machineConfiguration.getExtruderOffsetY(2);
-    extruderOffsets[1][2] = machineConfiguration.getExtruderOffsetZ(2);
+  //Get the extruder configuration (rework)
+  for (i = 1; i <= numberOfExtruders; i++) {
+    extruderOffsets[i - 1] = [];
+    extruderOffsets[i - 1][0] = machineConfiguration.getExtruderOffsetX(i);
+    extruderOffsets[i - 1][1] = machineConfiguration.getExtruderOffsetY(i);
+    extruderOffsets[i - 1][2] = machineConfiguration.getExtruderOffsetZ(i);
   }
 }
 
