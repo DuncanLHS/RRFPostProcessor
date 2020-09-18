@@ -1,5 +1,5 @@
 description = "Generic RRF Machine";
-vendor = "UnofficialRepRap";
+vendor = "Unofficial RRF";
 vendorUrl = "https://forum.duet3d.com/topic/14872/fusion-360-fdm-fff-slicing/";
 legal = "";
 certificationLevel = 2;
@@ -13,9 +13,15 @@ setCodePage("ascii");
 capabilities = CAPABILITY_ADDITIVE;
 tolerance = spatial(0.002, MM);
 highFeedrate = (unit == MM) ? 6000 : 236;
-
-//allow circular planes test
-//allowedCircularPlanes = (1 << PLANE_XY);
+//For G2/G3
+minimumChordLength = spatial(0.25, MM);
+minimumCircularRadius = spatial(0.4, MM);
+maximumCircularRadius = spatial(1000, MM);
+minimumCircularSweep = toRad(0.01);
+maximumCircularSweep = toRad(180);
+allowHelicalMoves = false; // disable helical support
+allowSpiralMoves = false; // disable spiral support
+allowedCircularPlanes = 1 << PLANE_XY; // allow XY circular motion
 
 // needed for range checking, will be effectively passed from Fusion
 var printerLimits = {
@@ -98,6 +104,8 @@ var zOutput = createVariable({prefix: "Z"}, zFormat);
 var feedOutput = createVariable({prefix: "F"}, feedFormat);
 var eOutput = createVariable({prefix: "E"}, xyzFormat);  // Extrusion length
 var sOutput = createVariable({prefix: "S", force: true}, xyzFormat);  // Parameter temperature or speed
+var iOutput = createReferenceVariable({prefix:"I", force:true}, xyzFormat);  // circular output
+var jOutput = createReferenceVariable({prefix:"J", force:true}, xyzFormat);  // circular output
 
 //incremental layer count for heater workaround
 var incLayerCount = 0
@@ -234,6 +242,25 @@ function onLinearExtrude(_x, _y, _z, _f, _e) {
   var e = eOutput.format(_e);
   if (x || y || z || f || e) {
     writeBlock(gMotionModal.format(1), x, y, z, f, e);
+  }
+}
+
+function onCircularExtrude(_clockwise, _cx, _cy, _cz, _x, _y, _z, _f, _e) {
+  var x = xOutput.format(_x);
+  var y = yOutput.format(_y);
+  var z = zOutput.format(_z);
+  var f = feedOutput.format(_f);
+  var e = eOutput.format(_e);
+  var start = getCurrentPosition();
+  var i = iOutput.format(_cx - start.x, 0); // arc center relative to start point
+  var j = jOutput.format(_cy - start.y, 0);
+  
+  switch (getCircularPlane()) {
+  case PLANE_XY:
+    writeBlock(gMotionModal.format(_clockwise ? 2 : 3), x, y, i, j, f, e);
+    break;
+  default:
+    linearize(tolerance);
   }
 }
 
