@@ -16,6 +16,10 @@ Several properties can be adjusted to customise the output. All are found in the
 - **Layer Change Min Layer:** First layer at which the Layer Change Macro should be run.
 - **Post Heat Macro:** Full path to a macro that will be run after the toolpath heater control but before the print start. Path is to be identical to that used in M98.
 
+### Update 13/12/2020
+
+Created option to turn on relative extrusion in post parameters (default: true) not currently available via any other option in Fusion UI.
+
 ### Update 26/06/2020
 
 Created a fan speed property in the post processor. Workaround for the currently non-existent fan speed control. Current Fusion 360 default is to turn the fan on 100% after the number of layers diasbled in print settings. This changes that to a custom value.
@@ -50,5 +54,5 @@ Early changes to generic fff example:
 ## Additional notes:
 - ~~Initial extruder heating, bed heating, and the purge line are all automatic and cannot be edited at present.~~
 - Standby temperatures are not natively supported.
-- CAM output for extrusion is absolute only.
+- ~~CAM output for extrusion is absolute only.~~
 - ~~Heaters are turned off at end of toolpath. cannot be edited at present.~~
