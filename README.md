@@ -1,4 +1,4 @@
-# First attempt at a RepRap Firmware post-processor for Fusion 360 FFF.
+RepRap Firmware post-processor for Fusion 360 FFF.
 
 All previous start and end scripts stored in slicer should be moved to start.g and stop.g in RRF firmware.
 
@@ -15,6 +15,7 @@ Several properties can be adjusted to customise the output. All are found in the
 - **Layer Change Macro:** Full path to a macro that will be run at the start of each layer. Path is to be identical to that used in M98.
 - **Layer Change Min Layer:** First layer at which the Layer Change Macro should be run.
 - **Post Heat Macro:** Full path to a macro that will be run after the toolpath heater control but before the print start. Path is to be identical to that used in M98.
+- **Relative Extrusion:** Use relative co-ordinates for extruder motion.
 
 ### Update 13/12/2020
 
